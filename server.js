@@ -1,7 +1,6 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
 const db = require('./db/connection');
-require('console.table');
 
 const { allDepartments, addDepartment, deleteDepartment } = require('./lib/Departments');
 const { allEmployees, addEmployee, deleteEmployee } = require('./lib/Employees');
@@ -24,7 +23,7 @@ db.connect(function (err) {
   start();
 });
 
-function start() {
+const start = function () {
   inquirer
     .prompt({
       type: 'list',
@@ -33,38 +32,66 @@ function start() {
       choices: ['View All Employees', 'Add Employee', 'Update Employee Role', 'View All Roles', 'Add Role', 'View Departments', 'Add Department', 'Quit'],
       loop: false,
     })
-    .then(taskChoosen => {
+    .then(asynctaskChoosen => {
       const { task } = taskChoosen;
-      switch (task) {
-        case 'View All Employees':
-          allEmployees();
-          break;
-
-        case 'Add Employee':
-          break;
-
-        case 'Update Employee Role':
-          break;
-
-        case 'View All Roles':
-          allRoles();
-          console.log('//View All Roles Choosen//');
-          break;
-
-        case 'Add Role':
-          break;
-
-        case 'View Departments':
-          allDepartments();
-          break;
-
-        case 'Add Department':
-          addDepartment();
-          break;
-
-        case 'Quit':
-          db.end();
-          break;
-      }
+      await runFunction(task);
+      return 1;
+    })
+    .then(() => {
+      start();
     });
+};
+
+async function runFunction(choosenFunction) {
+  if (choosenFunction == 'View All Employees') {
+    allEmployees();
+    return;
+  } else if (choosenFunction == 'Add Employee') {
+    addEmployee();
+    return;
+  }
 }
+
+// switch (choosenFunction) {
+//   case 'View All Employees':
+//     allEmployees();
+//     console.log('\n');
+//     break;
+
+//   case 'Add Employee':
+//     addEmployee();
+//     break;
+
+//   case 'Update Employee Role':
+//     break;
+
+//   case 'View All Roles':
+//     allRoles();
+//     console.log('\n');
+//     break;
+
+//   case 'Add Role':
+//     addRole();
+//     console.log('\n');
+//     break;
+
+//   case 'View Departments':
+//     allDepartments();
+//     console.log('\n');
+//     start;
+//     break;
+
+//   case 'Add Department':
+//     addDepartment();
+//     console.log('\n');
+//     break;
+
+//   case 'Quit':
+//     db.end();
+//     break;
+
+//   default:
+//     return;
+// }
+//   });
+// }
