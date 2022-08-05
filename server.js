@@ -259,3 +259,69 @@ function promptUpdateRole(allEmployees, allRoles) {
     });
 }
 // ---------END UPDATE EMPLOYEE -------------
+
+// --------- ADD ROLE -------------
+function addRole() {
+  var query = `SELECT d.id, d.name
+    FROM departments d`;
+
+  db.query(query, function (err, res) {
+    if (err) throw err;
+
+    const departmentChoices = res.map(({ id, name }) => ({
+      value: id,
+      name: `${id} ${name}`,
+    }));
+
+    console.table(res);
+    console.log(`
+    -----------------
+    \u25B2 All Departments \u25B2
+    -----------------`);
+
+    promptAddRole(departmentChoices);
+  });
+}
+
+function promptAddRole(departmentChoices) {
+  inquirer
+    .prompt([
+      {
+        type: 'input',
+        name: 'role_title',
+        message: 'Enter the title of this role:',
+      },
+      {
+        type: 'input',
+        name: 'role_salary',
+        message: "Enter the role's salary:",
+      },
+      {
+        type: 'list',
+        name: 'department_id',
+        message: 'Enter department this role belong to:',
+        choices: departmentChoices,
+      },
+    ])
+    .then(function (answer) {
+      var query = `INSERT INTO roles SET ?`;
+
+      db.query(
+        query,
+        {
+          title: answer.role_title,
+          salary: answer.role_salary,
+          department_id: answer.department_id,
+        },
+
+        function (err, res) {
+          if (err) throw err;
+
+          console.table(res);
+          console.log(res.affectedRows + ' role added \n');
+
+          start();
+        }
+      );
+    });
+}
