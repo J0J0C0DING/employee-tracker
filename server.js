@@ -303,15 +303,15 @@ function promptAddRole(departmentChoices) {
         choices: departmentChoices,
       },
     ])
-    .then(function (answer) {
-      var query = `INSERT INTO roles SET ?`;
+    .then(function (result) {
+      const query = `INSERT INTO roles SET ?`;
 
       db.query(
         query,
         {
-          title: answer.role_title,
-          salary: answer.role_salary,
-          department_id: answer.department_id,
+          title: result.role_title,
+          salary: result.role_salary,
+          department_id: result.department_id,
         },
 
         function (err, res) {
@@ -325,3 +325,39 @@ function promptAddRole(departmentChoices) {
       );
     });
 }
+// ---------END ADD ROLE--------------
+
+// ---------ADD DEPARTMENT-----------
+function addDepartment() {
+  allDepartments();
+
+  inquirer
+    .prompt([
+      {
+        type: 'input',
+        name: 'department_title',
+        message: 'Enter the name of new department:',
+      },
+    ])
+    .then(function (result) {
+      const query = `INSERT INTO departments SET ?`;
+
+      db.query(
+        query,
+        {
+          name: result.department_title,
+        },
+
+        function (err, res) {
+          if (err) throw err;
+
+          console.table(res);
+          console.log(res.affectedRows + ' department added \n');
+
+          start();
+        }
+      );
+    });
+}
+
+// ---------END ADD DEPARTMENT--------------
