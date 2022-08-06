@@ -144,7 +144,6 @@ function promptInsert(roleChoices) {
         type: 'input',
         name: 'manager_id',
         message: "What is your manager's id number? (Leave empty if N/A)",
-        default: null,
       },
     ])
     .then(function (result) {
